@@ -56,7 +56,7 @@ private:
 	int8 m_roll;	
 	int8 m_pitch_nofilt;
 	int8 m_roll_nofilt;
-	short m_compassBearing;
+	float m_compassBearing;
 	short m_Temperature;	
 	struct m_coord m_magnometer, m_gyro, m_accelerometer;
 	
@@ -65,7 +65,7 @@ public :
 	void showSoftVersion();
 	int calibrateDevice();
 	int restoreFactoryDefault();	
-	short m_getBearing16(); 
+	float m_getBearing16(); 
 	short m_getBearing8();
 	struct m_coord getMagnometer();
 	struct m_coord getGyro();

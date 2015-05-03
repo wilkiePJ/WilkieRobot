@@ -44,7 +44,7 @@ return(0);
 	
 //FUNCTION: m_ getBearing16 
 //PURPOSE read the compass data, returns a short. returns -1 on error, otherwise a compass bearing between 0 and 360 degrees
-short Orientation::m_getBearing16()
+float Orientation::m_getBearing16()
 {
 	int err[2]={0,0};
 	int8 high=0;
@@ -66,7 +66,7 @@ short Orientation::m_getBearing16()
 		usleep(1000);
 	}
 	
-	return(result);
+	return((float)(result)/10.0f);
 	
 }
  
