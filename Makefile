@@ -6,9 +6,9 @@ CC = g++
 #  -Wall turns on most, but not all, compiler warnings
 CFLAGS = -g -Wall -std=c++0x 
 
-INCLUDES = -I/home/pi/BCM2835
+INCLUDES = -I/home/pi/BCM2835 -I/home/pi/WilkieRobot
 
-SRCS = /home/pi/BCM2835/BCM2835.cpp WilkieRobot.cpp
+SRCS = /home/pi/BCM2835/BCM2835.cpp WilkieRobot.cpp CMPS11.cpp
 
 # the build target executable:
 TARGET = WilkieRobot

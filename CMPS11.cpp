@@ -10,7 +10,7 @@
 
 //FUNCTION showSoftVersion
 //PURPOSE show the current software version of the hardware.
-void Orientiation::showSoftVersion()
+void Orientation::showSoftVersion()
 {
 	int softVersion=0;
 	
@@ -47,7 +47,7 @@ return(0);
 float Orientation::m_getBearing16()
 {
 	int err[2]={0,0};
-	int8 high=0;
+	int8_t high=0;
 	short result=0;
 	
 
@@ -77,16 +77,16 @@ short Orientation::m_getBearing8()
 	int err=0;
 
 	err=readReg8(COMPASS_8);
-	if(err=-1) return(-1) else return(err);	
+	if(err==-1) return(-1); else return(err);	
 }
 
 
 //FUNCTION getMagnetometer
 //PURPOSE read the Magnetometer data, returns a structure - returns -1 on each coordinate if failes to read.
-struct m_coord Orientaion::getMagnometer()
+struct m_coord Orientation::getMagnometer()
 {
 	int err[6]={0,0,0,0,0,0};
-	int8 high=0;
+	int8_t high=0;
 	struct m_coord result;
 	
 
@@ -118,7 +118,7 @@ struct m_coord Orientaion::getMagnometer()
 struct m_coord Orientation::getGyro()
 {
 	int err[6]={0,0,0,0,0,0};
-	int8 high=0;
+	int8_t high=0;
 	struct m_coord result;
 	
 
@@ -149,7 +149,7 @@ struct m_coord Orientation::getGyro()
 struct m_coord Orientation::getAccelerometer()
 {
 	int err[6]={0,0,0,0,0,0};
-	int8 high=0;
+	int8_t high=0;
 	struct m_coord result;
 
 
@@ -175,7 +175,7 @@ struct m_coord Orientation::getAccelerometer()
 	return(result);
 }
 
-int8 Orientation::getPitch(bool mode)
+int8_t Orientation::getPitch(bool mode)
 {		// true=filter on, false=filter off
 	int err=0;
 
@@ -185,9 +185,10 @@ int8 Orientation::getPitch(bool mode)
 		case false: break;
 		default: break;
 	}
+	return(0);
 }
 
-int8 Orientation::getRoll(bool mode)
+int8_t Orientation::getRoll(bool mode)
 {
 	int err=0;
 
@@ -197,10 +198,10 @@ int8 Orientation::getRoll(bool mode)
 		case false: break;
 		default: break;
 	}
-
+	return(0);
 }
 
-short Orientation::convertShort(int8 high, int8 low)
+short Orientation::convertShort(int8_t high, int8_t low)
 {
 	return((high << 8) | low);
 }

@@ -1,6 +1,7 @@
 //Test.cpp - test main to test the driver.
 
 #include "BCM2835.h"
+#include "CMPS11.h"
 #include <string.h>
 
 void SendCommand(I2C &i2c, int cmd, int speed)
@@ -26,9 +27,11 @@ int main(void)
 {
         int selection=0,speed=0;
 	bool exitLoop=false;
+	float bearing=0.0f;
 	
 	GPIO gpio;		//GPIO controller object
 	I2C  i2c;
+	Orientation cmps11;
 
 	gpio.m_toggleI2C();		//enable I2C Mode also prevents changes to I2C pins
 	i2c.setSlaveAddr(0x2a);		//set the slave address of the device
@@ -45,6 +48,7 @@ int main(void)
 		std::cout << "Enabling GPIO I2C Pins on the PI." << std::endl;	
 		std::cout << "Setting Slave Address of the Arduino:" << std::endl;	
 		std::cout << "Baud Set to 90kHz to prevent stretching.." << std::endl;	
+		cmps11.showSoftVersion();
 
 		std::cout << "Select Mode:" << std::endl << 
 		     "(1) Set Speed" << std::endl <<
@@ -53,7 +57,9 @@ int main(void)
 		     "(4) Move Left" << std::endl <<	
 		     "(5) Move Right" << std::endl <<
 		     "(6) Stop" << std::endl <<
-		     "(7) Quit" << std::endl;
+		     "(7) Quit" << std::endl <<
+		     "(8) Compass" << std::endl;
+			
 		std::cin >> selection;
 
 		switch(selection)
@@ -73,6 +79,12 @@ int main(void)
 			case 6:		SendCommand(i2c,50 & 0xFF,speed);
 					break;
 			case 7:		exitLoop=true;
+					break;
+			case 8:		for(;;)
+					{
+						bearing=cmps11.m_getBearing16();
+						std::cout << "Bearing: " << bearing << std::endl;	
+					}
 					break;
 			default:	break;
 		}

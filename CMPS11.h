@@ -10,7 +10,7 @@
 #include "BCM2835.h"
 #include <sys/types.h>
 #include <unistd.h>
-
+#include <stdint.h>
 // Register layout for the CMPS11 in I2C mode.
 
 #define CMPS11_ADDR 0x60		//default value returned.
@@ -44,7 +44,7 @@
 #define PITCH_ANGLE_NO_FILTER 26	// pitch angle - no filter 8 bit
 #define ROLL_ANGLE_NO_FILTER 27		// roll angle - no filter 8 bit
 
-struct m_coord;
+struct m_coord
 {
 	short x,y,z;
 };
@@ -52,15 +52,15 @@ struct m_coord;
 class Orientation : public I2C
 {
 private:
-	int8 m_pitch;
-	int8 m_roll;	
-	int8 m_pitch_nofilt;
-	int8 m_roll_nofilt;
+	int8_t m_pitch;
+	int8_t m_roll;	
+	int8_t m_pitch_nofilt;
+	int8_t m_roll_nofilt;
 	float m_compassBearing;
 	short m_Temperature;	
 	struct m_coord m_magnometer, m_gyro, m_accelerometer;
 	
-	short convertShort(int8 high, int8 low);	
+	short convertShort(int8_t high, int8_t low);	
 public :
 	void showSoftVersion();
 	int calibrateDevice();
@@ -70,8 +70,8 @@ public :
 	struct m_coord getMagnometer();
 	struct m_coord getGyro();
 	struct m_coord getAccelerometer();
-	int8 getPitch(bool mode);		// true=filter on, false=filter off
-	int8 getRoll(bool mode);
+	int8_t getPitch(bool mode);		// true=filter on, false=filter off
+	int8_t getRoll(bool mode);
 	Orientation();
 	~Orientation();
 };
