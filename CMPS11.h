@@ -63,8 +63,9 @@ private:
 	short convertShort(int8_t high, int8_t low);	
 public :
 	void showSoftVersion();
-	int calibrateDevice();
+	int calibrateDevice(bool mode);
 	int restoreFactoryDefault();	
+	int exitCalibration();
 	float m_getBearing16(); 
 	short m_getBearing8();
 	struct m_coord getMagnometer();
@@ -72,6 +73,7 @@ public :
 	struct m_coord getAccelerometer();
 	int8_t getPitch(bool mode);		// true=filter on, false=filter off
 	int8_t getRoll(bool mode);
+	int m_getTemperature();
 	Orientation();
 	~Orientation();
 };

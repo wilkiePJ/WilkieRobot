@@ -10,13 +10,14 @@ INCLUDES = -I/home/pi/BCM2835 -I/home/pi/WilkieRobot
 
 SRCS = /home/pi/BCM2835/BCM2835.cpp WilkieRobot.cpp CMPS11.cpp
 
+LIBRARY = -lncurses -lpthread
 # the build target executable:
 TARGET = WilkieRobot
 
 all: $(TARGET)
 	
 $(TARGET):$(TARGET).cpp
-	$(CC) $(CFLAGS) $(INCLUDES) $(SRCS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(SRCS) $(LIBRARY)
 	
 clean:
 	$(RM) $(TARGET)

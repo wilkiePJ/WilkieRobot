@@ -29,18 +29,90 @@ void Orientation::showSoftVersion()
 }
 
 //FUNCTION calibrateDevice
-//PURPOSE Enter calibration mode
-int Orientation::calibrateDevice()
+//PURPOSE Enter calibration mode true=horizontal mode only, false full with tilt compensation
+int Orientation::calibrateDevice(bool mode)
 {
+
+ if(mode)
+ { 
+
+	if(writeReg8(COMMAND_REG,0xF0)==-1) return(-1);
+	else
+	{
+		usleep(2500);
+		if(writeReg8(COMMAND_REG,0xF5)==-1) return(-1);
+		else
+		{
+			usleep(2500);
+			if(writeReg8(COMMAND_REG,0xF7)==-1) return(-1);
+			else
+			{	
+			usleep(2500);
+			return(0);
+			}
+		}
+	}
+ }	
+ else
+ {
+	
+	if(writeReg8(COMMAND_REG,0xF0)==-1) return(-1);
+	else
+	{
+		usleep(2500);
+		if(writeReg8(COMMAND_REG,0xF5)==-1) return(-1);
+		else
+		{
+			usleep(2500);
+			if(writeReg8(COMMAND_REG,0xF6)==-1) return(-1);
+			else
+			{	
+			usleep(2500);
+			return(0);
+			}
+		}
+	}
+ }
+
 return(0);
 }
 
 //FUNCTION: restoreFactoryDefault
-//PURPOSE reset the device to factory default settings.
+//PURPOSE reset the device to factory default settings. Returns -1 on write error
 int Orientation::restoreFactoryDefault()
 {
-return(0);
+
+	if(writeReg8(COMMAND_REG,0x20)==-1) return(-1);
+	else
+	{
+		usleep(2500);
+		if(writeReg8(COMMAND_REG,0x2A)==-1) return(-1);
+		else
+		{
+			usleep(2500);
+			if(writeReg8(COMMAND_REG,0x60)==-1) return(-1);
+			else
+			{	
+			usleep(2500);
+			return(0);
+			}
+		}
+	}
+	
 }
+
+//FUNCTION: exitCalibration - exits calibration
+//PURPOSE: stop the claibration mode and return to the normal mode of operation
+int Orientation::exitCalibration()
+{
+	if(writeReg8(COMMAND_REG,0xF8)==-1) return(-1);
+	else
+	{
+		usleep(2500);
+		return(0);
+	}
+}
+
 	
 //FUNCTION: m_ getBearing16 
 //PURPOSE read the compass data, returns a short. returns -1 on error, otherwise a compass bearing between 0 and 360 degrees
@@ -205,6 +277,34 @@ short Orientation::convertShort(int8_t high, int8_t low)
 {
 	return((high << 8) | low);
 }
+
+//FUNCTION: Read temperature from the sensor, returns a signed int
+int Orientation::m_getTemperature()
+{
+	int err[2]={0,0};
+	int8_t high=0;
+	int result=0;
+	
+
+	//read temperature 
+	for(int i=0; i<2; i++)
+	{
+		err[i]=readReg8(i+TEMP_RAW_HIGH);
+		if(err[i]==-1)
+		{
+			result=-1;
+		}
+		else
+		{
+			if(i==0) high=(err[i] & 0xFF); else result=(int)((high <<8) | (err[i] & 0xFF)); 
+		}
+		usleep(1000);
+	}
+	
+	return(result);
+
+}
+
 
 Orientation::Orientation()
 {
