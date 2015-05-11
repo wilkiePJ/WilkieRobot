@@ -32,26 +32,17 @@ void Orientation::showSoftVersion()
 //PURPOSE Enter calibration mode true=horizontal mode only, false full with tilt compensation
 int Orientation::calibrateDevice(bool mode)
 {
-
+int err=0;
  if(mode)
  { 
 
-	if(writeReg8(COMMAND_REG,0xF0)==-1) return(-1);
-	else
-	{
-		usleep(2500);
-		if(writeReg8(COMMAND_REG,0xF5)==-1) return(-1);
-		else
-		{
-			usleep(2500);
-			if(writeReg8(COMMAND_REG,0xF7)==-1) return(-1);
-			else
-			{	
-			usleep(2500);
-			return(0);
-			}
-		}
-	}
+	err=writeReg8(COMMAND_REG,(0xF0));
+	usleep(20000-2500);
+	err=writeReg8(COMMAND_REG,(0xF5));
+	usleep(20000-2500);	
+	err=writeReg8(COMMAND_REG,(0xF7));
+	usleep(20000-2500);
+		
  }	
  else
  {
@@ -59,15 +50,15 @@ int Orientation::calibrateDevice(bool mode)
 	if(writeReg8(COMMAND_REG,0xF0)==-1) return(-1);
 	else
 	{
-		usleep(2500);
+		usleep(25000);
 		if(writeReg8(COMMAND_REG,0xF5)==-1) return(-1);
 		else
 		{
-			usleep(2500);
+			usleep(25000);
 			if(writeReg8(COMMAND_REG,0xF6)==-1) return(-1);
 			else
 			{	
-			usleep(2500);
+			usleep(25000);
 			return(0);
 			}
 		}
@@ -82,33 +73,30 @@ return(0);
 int Orientation::restoreFactoryDefault()
 {
 
-	if(writeReg8(COMMAND_REG,0x20)==-1) return(-1);
-	else
-	{
-		usleep(2500);
-		if(writeReg8(COMMAND_REG,0x2A)==-1) return(-1);
-		else
-		{
-			usleep(2500);
-			if(writeReg8(COMMAND_REG,0x60)==-1) return(-1);
-			else
-			{	
-			usleep(2500);
-			return(0);
-			}
-		}
-	}
+	writeReg8(COMMAND_REG,(0x20));
+	usleep(1000000);
+	writeReg8(COMMAND_REG,(0x2A));
+	usleep(1000000);
+	writeReg8(COMMAND_REG,(0x60));
+	usleep(1000000);
 	
+	return(0);
+			
+	
+	
+		
 }
 
 //FUNCTION: exitCalibration - exits calibration
 //PURPOSE: stop the claibration mode and return to the normal mode of operation
 int Orientation::exitCalibration()
 {
-	if(writeReg8(COMMAND_REG,0xF8)==-1) return(-1);
+	int err=0;
+	err=writeReg8(COMMAND_REG,(0xF8));
+	//usleep(25000);
+	if(err==-1) return(-1);
 	else
 	{
-		usleep(2500);
 		return(0);
 	}
 }

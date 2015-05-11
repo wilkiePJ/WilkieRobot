@@ -52,16 +52,21 @@ void *displayBearing(void *threadarg)
 		{
 			bearing=recieved_data->Compass->m_getBearing16();
 			cout << "\033[0;0fBearing:" << bearing;
+			usleep(500000);
 		}
-		usleep(50000);
-	}
+		else
+		{
+			cout << "\033[0;0fBearing:Pause  ";		
+		}
+
+			}
 pthread_exit(NULL);
 }
 
 void *displayMenu(void *threadarg)
 {
 	int speed=0;
-	char selection='0';
+	char selection='0',exitCal='0';
 	bool exitLoop=false;
 	struct thread_data *recieved_data;
 	
@@ -86,14 +91,15 @@ void *displayMenu(void *threadarg)
 			"\033[14;0f(5) Move Right" << endl <<
 			"\033[15;0f(6) Stop" << endl <<
 			"\033[16;0f(7) Quit" << endl <<
-			"\033[17;0f(8) Compass" << endl;
-		selection=getchar();
+			"\033[17;0f(8) Calibrate Compass" << endl <<
+			"\033[18;0f(9) Restore Default Compass Settings" << endl;
+	selection=getchar();
 		
 		switch(selection)
 		{
 
 			case '1':		inputLock=true;
-						cout << "\033[17;0fEnter speed from 0 - 255:";
+						cout << "\033[19;0fEnter speed from 0 - 255:";
 						cin >> speed;
 						inputLock=false;
 					break;
@@ -108,9 +114,29 @@ void *displayMenu(void *threadarg)
 			case '6':		SendCommand(*recieved_data->i2cptr,50 & 0xFF,speed);
 					break;
 			case '7':		exitLoop=true;
+					break;			
+			case '8':		cout << "\033[0;40f Press q to exit Calibration" << endl;
+						inputLock=true;
+						//usleep(500000);
+						if(recieved_data->Compass->calibrateDevice(true)==-1)
+						{
+							cout << "\033[0;40f Error writing to device" << endl;
+							usleep(500000);
+						}
+						
+						while(exitCal!='q')
+						{
+							exitCal=getchar();
+						}
+						recieved_data->Compass->exitCalibration();
+						inputLock=false;
 					break;
-			case '8':
-					break;
+			case '9':	inputLock=true;
+					recieved_data->Compass->restoreFactoryDefault();
+					cout << "Factory Defaults Restored" << endl;
+					usleep(500000);
+					inputLock=false;
+					break;	
 			default:	break;
 		}
 	
