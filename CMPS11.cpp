@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "CMPS11.h"
+#include <vector>
 
 
 //FUNCTION showSoftVersion
@@ -32,58 +33,82 @@ void Orientation::showSoftVersion()
 //PURPOSE Enter calibration mode true=horizontal mode only, false full with tilt compensation
 int Orientation::calibrateDevice(bool mode)
 {
-int err=0;
- if(mode)
- { 
-
-	err=writeReg8(COMMAND_REG,(0xF0));
-	usleep(20000-2500);
-	err=writeReg8(COMMAND_REG,(0xF5));
-	usleep(20000-2500);	
-	err=writeReg8(COMMAND_REG,(0xF7));
-	usleep(20000-2500);
-		
- }	
- else
- {
+	int err=0;
+	std::vector<int> Buffer;
 	
-	if(writeReg8(COMMAND_REG,0xF0)==-1) return(-1);
+	if(mode)
+ 	{ 
+		usleep(20000);
+		Buffer.push_back(COMMAND_REG);
+		Buffer.push_back(0xF0);
+		err=writeData(Buffer,Buffer.size());
+		Buffer.clear();
+		usleep(20000);
+		Buffer.push_back(COMMAND_REG);
+		Buffer.push_back(0xF5);
+		err=writeData(Buffer,Buffer.size());
+		Buffer.clear();
+		usleep(20000);	
+		Buffer.push_back(COMMAND_REG);
+		Buffer.push_back(0xF7);
+		err=writeData(Buffer,Buffer.size());
+		Buffer.clear();
+		usleep(20000);
+	}
+ 	
 	else
 	{
-		usleep(25000);
-		if(writeReg8(COMMAND_REG,0xF5)==-1) return(-1);
-		else
-		{
-			usleep(25000);
-			if(writeReg8(COMMAND_REG,0xF6)==-1) return(-1);
-			else
-			{	
-			usleep(25000);
-			return(0);
-			}
-		}
-	}
- }
+		usleep(20000);
+		Buffer.push_back(COMMAND_REG);
+		Buffer.push_back(0xF0);
+		err=writeData(Buffer,Buffer.size());
+		Buffer.clear();
+		usleep(20000);
+		Buffer.push_back(COMMAND_REG);
+		Buffer.push_back(0xF5);
+		err=writeData(Buffer,Buffer.size());
+		Buffer.clear();
+		usleep(20000);	
+		Buffer.push_back(COMMAND_REG);
+		Buffer.push_back(0xF6);
+		err=writeData(Buffer,Buffer.size());
+		Buffer.clear();
+		usleep(20000);	
 
-return(0);
+	}
+ 
+
+return(err);
 }
 
 //FUNCTION: restoreFactoryDefault
 //PURPOSE reset the device to factory default settings. Returns -1 on write error
 int Orientation::restoreFactoryDefault()
 {
+	std::vector<int> Buffer;
+	int err=0;
 
-	writeReg8(COMMAND_REG,(0x20));
-	usleep(1000000);
-	writeReg8(COMMAND_REG,(0x2A));
-	usleep(1000000);
-	writeReg8(COMMAND_REG,(0x60));
-	usleep(1000000);
-	
-	return(0);
+	usleep(20000);
+	Buffer.push_back(COMMAND_REG);
+	Buffer.push_back(0x20);
+	err=writeData(Buffer,Buffer.size());
+	Buffer.clear();
+						
+	usleep(20000);
+	Buffer.push_back(COMMAND_REG);
+	Buffer.push_back(0x2A);
+	err=writeData(Buffer,Buffer.size());
+	Buffer.clear();
 			
+	usleep(20000);	
+	Buffer.push_back(COMMAND_REG);
+	Buffer.push_back(0x60);
+	err=writeData(Buffer,Buffer.size());
+	Buffer.clear();			
 	
-	
+	usleep(20000);
+
+	return(err);
 		
 }
 
@@ -92,8 +117,13 @@ int Orientation::restoreFactoryDefault()
 int Orientation::exitCalibration()
 {
 	int err=0;
-	err=writeReg8(COMMAND_REG,(0xF8));
-	//usleep(25000);
+	std::vector<int> Buffer;
+
+	Buffer.push_back(COMMAND_REG);
+	Buffer.push_back(0xF8);
+	err=writeData(Buffer,Buffer.size());
+	Buffer.clear();
+	usleep(20000);
 	if(err==-1) return(-1);
 	else
 	{
@@ -296,7 +326,7 @@ int Orientation::m_getTemperature()
 
 Orientation::Orientation()
 {
-	//setBaud(90000);
+	//setBaud(100000);
 	setSlaveAddr(CMPS11_ADDR); //set up the I2C address for the module
 	configureDevice(I2C_BASE_ADDR);
 }
